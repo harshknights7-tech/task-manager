@@ -141,7 +141,7 @@ export interface DocumentCategory {
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = 'http://localhost:3000/api';
+  private readonly baseUrl = this.getApiBaseUrl();
   
   private tokenSubject = new BehaviorSubject<string | null>(null);
   public token$ = this.tokenSubject.asObservable();
@@ -151,6 +151,15 @@ export class ApiService {
     if (token) {
       this.tokenSubject.next(token);
     }
+  }
+
+  private getApiBaseUrl(): string {
+    // Check if we're in production (Vercel)
+    if (window.location.hostname.includes('vercel.app')) {
+      return 'https://your-backend-url.railway.app/api';
+    }
+    // Check if we're in development
+    return 'http://localhost:3000/api';
   }
 
   private getHeaders(): HttpHeaders {
