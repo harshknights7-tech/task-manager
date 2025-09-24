@@ -1,0 +1,74 @@
+<div class="view-header">
+  <h2>Doctors</h2>
+  <button (click)="openNewForm()" class="btn primary">Create New</button>
+</div>
+
+<div class="list">
+  @if (doctors().length === 0) {
+    <div class="empty-state">
+      <h3>No doctors found</h3>
+      <p>Add your first doctor to get started!</p>
+    </div>
+  } @else {
+    @for (d of doctors(); track d.id) {
+      <div class="task-card" (click)="goTo(d.id)">
+        <div class="title">{{ d.name }}</div>
+        <div class="meta">{{ d.specialty || '—' }} • {{ d.phone || d.email || '—' }}</div>
+      </div>
+    }
+  }
+</div>
+
+<app-form-window 
+  [isOpen]="showFormWindow" 
+  [title]="formTitle()"
+  [isLoading]="isLoading()"
+  (close)="onFormClose()"
+  (save)="onFormSave()"
+  (cancel)="onFormCancel()">
+  
+  <form class="form" (ngSubmit)="saveDoctor()">
+    <div class="form-group">
+      <label for="name">Doctor Name</label>
+      <input 
+        type="text" 
+        id="name" 
+        [(ngModel)]="doctor.name" 
+        name="name" 
+        required 
+        placeholder="Enter doctor's name" />
+    </div>
+    
+    <div class="form-group">
+      <label for="specialty">Specialty</label>
+      <input 
+        type="text" 
+        id="specialty" 
+        [(ngModel)]="doctor.specialty" 
+        name="specialty" 
+        placeholder="e.g., Cardiologist, Pediatrician" />
+    </div>
+    
+    <div class="form-row">
+      <div class="form-group">
+        <label for="phone">Phone</label>
+        <input 
+          type="tel" 
+          id="phone" 
+          [(ngModel)]="doctor.phone" 
+          name="phone" 
+          placeholder="Phone number" />
+      </div>
+      
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input 
+          type="email" 
+          id="email" 
+          [(ngModel)]="doctor.email" 
+          name="email" 
+          placeholder="Email address" />
+      </div>
+    </div>
+  </form>
+</app-form-window>

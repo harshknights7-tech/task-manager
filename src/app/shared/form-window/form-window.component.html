@@ -1,0 +1,38 @@
+@if (isOpen()) {
+  <div class="form-window-backdrop" (click)="onBackdropClick($event)">
+    <div class="form-window" (click)="$event.stopPropagation()">
+      <div class="form-window-header">
+        <h3>{{ title }}</h3>
+        <button class="close-btn" (click)="onClose()" type="button">
+          <span>×</span>
+        </button>
+      </div>
+      
+      <div class="form-window-content">
+        <ng-content></ng-content>
+      </div>
+      
+      <div class="form-window-footer">
+        <button 
+          type="button" 
+          class="btn outline" 
+          (click)="onCancel()"
+          [disabled]="isLoading">
+          Cancel
+        </button>
+        <button 
+          type="button" 
+          class="btn primary" 
+          (click)="onSave()"
+          [disabled]="isLoading">
+          @if (isLoading) {
+            <span class="loading-spinner"></span>
+            Saving...
+          } @else {
+            Save
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+}

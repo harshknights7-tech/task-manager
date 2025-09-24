@@ -1,0 +1,128 @@
+<div class="view-header">
+  <h2>Tasks</h2>
+  <button (click)="openNewForm()" class="btn primary">Create New</button>
+</div>
+
+ 
+
+<div class="list">
+  <div class="filters">
+    <div class="chips">
+      <button class="chip" [class.active]="filter()==='all'" (click)="filter.set('all')">All</button>
+      <button class="chip" [class.active]="filter()==='open'" (click)="filter.set('open')">Open</button>
+      <button class="chip" [class.active]="filter()==='in_progress'" (click)="filter.set('in_progress')">In Progress</button>
+      <button class="chip" [class.active]="filter()==='completed'" (click)="filter.set('completed')">Completed</button>
+    </div>
+    <div class="sort">
+      <label>Sort by
+        <select [ngModel]="sort()" (ngModelChange)="sort.set($event)">
+          <option value="none">None</option>
+          <option value="priority">Priority</option>
+          <option value="dueon">Due Date</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  @if (filteredTasks().length === 0) {
+    <div class="empty-state">
+      <h3>No tasks found</h3>
+      <p>Create your first task to get started!</p>
+    </div>
+  } @else {
+    @for (t of filteredTasks(); track t.id) {
+      <div class="task-card">
+        <div class="row" (click)="goTo(t.id)">
+          <div class="status-icon">{{ (t.status||'open')==='completed' ? '✅' : ((t.status||'open')==='in_progress' ? '⏳' : '🟢') }}</div>
+          <div class="col">
+            <div class="title">{{ t.title }}</div>
+            <div class="meta">
+              <span class="badge" [class.low]="t.priority==='low'" [class.medium]="(t.priority||'medium')==='medium'" [class.high]="t.priority==='high'">{{ t.priority || 'medium' }}</span>
+              <span>• {{ t.status || 'open' }}</span>
+              @if (t.due_on) { <span>• Due {{ t.due_on }}</span> }
+            </div>
+          </div>
+        </div>
+        <div class="row actions">
+          <select [ngModel]="t.status" (ngModelChange)="updateStatus(t.id, $event)" class="status-select">
+            <option value="open">Open</option>
+            <option value="in_progress">In Progress</option>
+            <option value="completed">Completed</option>
+          </select>
+          <button class="icon" (click)="goTo(t.id)" title="Edit">✏️</button>
+          <button class="icon danger" (click)="deleteTask(t.id)" title="Delete">🗑️</button>
+        </div>
+      </div>
+    }
+  }
+</div>
+
+<app-form-window 
+  [isOpen]="showFormWindow" 
+  [title]="formTitle()"
+  [isLoading]="isLoading()"
+  (close)="onFormClose()"
+  (save)="onFormSave()"
+  (cancel)="onFormCancel()">
+  
+  <form class="form" (ngSubmit)="saveTask()">
+    <div class="form-group">
+      <label for="title">Task Title</label>
+      <input 
+        type="text" 
+        id="title" 
+        [(ngModel)]="task.title" 
+        name="title" 
+        required 
+        placeholder="Enter task title" />
+    </div>
+    
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea 
+        id="description" 
+        [(ngModel)]="task.description" 
+        name="description" 
+        placeholder="Enter additional details for the task..."
+        rows="4"></textarea>
+    </div>
+    
+    <div class="form-row">
+      <div class="form-group">
+        <label for="status">Task Status</label>
+        <select id="status" [(ngModel)]="task.status" name="status">
+          <option value="open">Open</option>
+          <option value="in_progress">In Progress</option>
+          <option value="completed">Completed</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label for="priority">Task Priority</label>
+        <select id="priority" [(ngModel)]="task.priority" name="priority">
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label for="due_on">Due Date</label>
+      <input 
+        type="date" 
+        id="due_on" 
+        [(ngModel)]="task.due_on" 
+        name="due_on" />
+    </div>
+    
+    <div class="form-group">
+      <label>Assign to Family Member</label>
+      <app-searchable-dropdown
+        [selectedValue]="task.assigned_to"
+        (selectionChange)="onFamilyMemberSelect($event)"
+        placeholder="Select family member to assign task to...">
+      </app-searchable-dropdown>
+    </div>
+  </form>
+</app-form-window>

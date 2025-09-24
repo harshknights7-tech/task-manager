@@ -1,0 +1,297 @@
+/* Modern Tasks Page Layout */
+.view-header { 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.filters { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  gap: var(--space-4); 
+  margin-bottom: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.chips { 
+  display: flex; 
+  gap: var(--space-2); 
+  flex-wrap: wrap;
+}
+
+.chip { 
+  padding: var(--space-2) var(--space-4); 
+  border-radius: var(--radius-full); 
+  border: 1px solid var(--gray-300); 
+  background: white; 
+  cursor: pointer; 
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  transition: all var(--transition-fast);
+  color: var(--gray-600);
+}
+
+.chip:hover {
+  border-color: var(--primary-300);
+  color: var(--primary-600);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.chip.active { 
+  background: linear-gradient(135deg, var(--primary-500), var(--secondary-500)); 
+  color: white; 
+  border-color: var(--primary-500);
+  box-shadow: var(--shadow-md);
+}
+
+.list { 
+  margin-top: var(--space-4); 
+  display: grid; 
+  gap: var(--space-4); 
+}
+
+.task-card { 
+  padding: var(--space-6); 
+  border: 1px solid var(--gray-200); 
+  border-radius: var(--radius-xl); 
+  box-shadow: var(--shadow-sm); 
+  background: white; 
+  display: grid; 
+  gap: var(--space-4);
+  transition: all var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+.task-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-500), var(--secondary-500));
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.task-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+  border-color: var(--primary-200);
+}
+
+.task-card:hover::before {
+  opacity: 1;
+}
+
+.task-card .row { 
+  display: flex; 
+  align-items: center; 
+  gap: var(--space-3); 
+}
+
+.task-card .row.actions { 
+  justify-content: flex-end; 
+  margin-top: var(--space-2);
+}
+
+.status-icon { 
+  font-size: var(--text-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background: var(--gray-100);
+}
+
+.title { 
+  font-weight: var(--font-semibold);
+  font-size: var(--text-lg);
+  color: var(--gray-900);
+  line-height: 1.4;
+}
+
+.meta { 
+  color: var(--gray-500); 
+  font-size: var(--text-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.card { 
+  margin-top: var(--space-6); 
+  background: white; 
+  border: 1px solid var(--gray-200); 
+  border-radius: var(--radius-xl); 
+  box-shadow: var(--shadow-lg); 
+  padding: var(--space-8); 
+  max-width: 640px;
+  animation: slideInUp 0.3s ease-out;
+}
+
+.section-title { 
+  font-weight: var(--font-semibold); 
+  font-size: var(--text-xl);
+  color: var(--gray-900); 
+  margin-bottom: var(--space-6);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.section-title::before {
+  content: '';
+  width: 4px;
+  height: 24px;
+  background: linear-gradient(135deg, var(--primary-500), var(--secondary-500));
+  border-radius: var(--radius-full);
+}
+
+.form { 
+  margin-top: var(--space-4); 
+  display: grid; 
+  gap: var(--space-4); 
+  max-width: 580px; 
+}
+
+.form label { 
+  display: grid; 
+  gap: var(--space-2); 
+  font-size: var(--text-sm); 
+  color: var(--gray-700);
+  font-weight: var(--font-medium);
+}
+
+.form input, .form textarea, .form select { 
+  padding: var(--space-3) var(--space-4); 
+  border-radius: var(--radius-md); 
+  border: 1px solid var(--gray-300); 
+  font: inherit;
+  background: white;
+  transition: all var(--transition-fast);
+}
+
+.form input:focus, .form textarea:focus, .form select:focus {
+  outline: none;
+  border-color: var(--primary-500);
+  box-shadow: 0 0 0 3px rgb(59 130 246 / 0.1);
+}
+.actions { 
+  display: flex; 
+  gap: var(--space-3); 
+  margin-top: var(--space-6); 
+}
+
+.actions.right { 
+  justify-content: flex-end; 
+}
+
+.badge { 
+  padding: var(--space-1) var(--space-3); 
+  border-radius: var(--radius-full); 
+  text-transform: capitalize; 
+  border: 1px solid transparent;
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+}
+
+.badge.low { 
+  background: var(--success-50); 
+  color: var(--success-600); 
+  border-color: var(--success-200);
+}
+
+.badge.medium { 
+  background: var(--warning-50); 
+  color: var(--warning-600); 
+  border-color: var(--warning-200);
+}
+
+.badge.high { 
+  background: var(--error-50); 
+  color: var(--error-600); 
+  border-color: var(--error-200);
+}
+
+.icon { 
+  background: transparent; 
+  border: 1px solid var(--gray-300); 
+  border-radius: var(--radius-md); 
+  padding: var(--space-2) var(--space-3); 
+  cursor: pointer; 
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+}
+
+.icon:hover { 
+  background: var(--gray-50); 
+  transform: scale(1.05);
+  border-color: var(--gray-400);
+}
+
+.icon.danger { 
+  border-color: var(--error-300);
+  color: var(--error-600);
+}
+
+.icon.danger:hover { 
+  background: var(--error-50); 
+  border-color: var(--error-400);
+  color: var(--error-700);
+}
+
+.status-select { 
+  padding: var(--space-1) var(--space-2); 
+  border-radius: var(--radius-sm); 
+  border: 1px solid var(--gray-300); 
+  font-size: var(--text-xs);
+  background: white;
+  cursor: pointer;
+}
+
+/* Form row layout */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .view-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-4);
+  }
+  
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-4);
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .task-card {
+    padding: var(--space-4);
+  }
+  
+  .card {
+    padding: var(--space-6);
+  }
+}
+

@@ -1,0 +1,22 @@
+.view-header { display: flex; align-items: center; justify-content: space-between; }
+.btn { padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; background: #fff; color: #111827; text-decoration: none; cursor: pointer; }
+.btn.primary { background: linear-gradient(90deg,#3b82f6,#9333ea); color: #fff; border: none; }
+.btn.lg { padding: 10px 16px; }
+.btn.outline { background: transparent; border: 1px solid #94a3b8; color: #334155; }
+.list { margin-top: 12px; display: grid; gap: 8px; }
+.task-card { padding: 12px; border: 1px solid #e5e7eb; border-radius: 12px; box-shadow: 0 6px 16px rgba(0,0,0,0.04); background: #fff; display: grid; gap: 6px; cursor: pointer; }
+.task-card:hover { background: #f8fafc; }
+.title { font-weight: 600; }
+.meta { color: #64748b; font-size: 12px; }
+.card { margin-top: 16px; background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); padding: 16px; max-width: 640px; }
+.section-title { font-weight: 600; color: #0f172a; margin-bottom: 12px; }
+.form { margin-top: 8px; display: grid; gap: 12px; max-width: 580px; }
+.form label { display: grid; gap: 6px; font-size: 14px; color: #334155; }
+.form input, .form textarea, .form select { padding: 8px 10px; border-radius: 6px; border: 1px solid #cbd5e1; font: inherit; }
+.actions { display: flex; gap: 8px; margin-top: 12px; }
+.actions.right { justify-content: flex-end; }
+.loading-state, .empty-state { text-align: center; padding: 40px 20px; color: #64748b; }
+.empty-state h3 { color: #334155; margin-bottom: 8px; }
+.empty-state p { margin-bottom: 16px; }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; }
+

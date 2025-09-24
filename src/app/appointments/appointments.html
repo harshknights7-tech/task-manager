@@ -1,0 +1,91 @@
+<div class="view-header">
+  <h2>Appointments</h2>
+  <button (click)="openNewForm()" class="btn primary">Create New</button>
+</div>
+
+<div class="list">
+  @if (appointments().length === 0) {
+    <div class="empty-state">
+      <h3>No appointments found</h3>
+      <p>Schedule your first appointment to get started!</p>
+    </div>
+  } @else {
+    @for (a of appointments(); track a.id) {
+      <div class="task-card" (click)="goTo(a.id)">
+        <div class="title">{{ a.title }}</div>
+        <div class="meta">{{ a.doctor || '—' }} • {{ a.appointment_date || '—' }} • {{ a.status || 'scheduled' }}</div>
+      </div>
+    }
+  }
+</div>
+
+<app-form-window 
+  [isOpen]="showFormWindow" 
+  [title]="formTitle()"
+  [isLoading]="isLoading()"
+  (close)="onFormClose()"
+  (save)="onFormSave()"
+  (cancel)="onFormCancel()">
+  
+  <form class="form" (ngSubmit)="saveAppointment()">
+    <div class="form-group">
+      <label for="title">Appointment Title</label>
+      <input 
+        type="text" 
+        id="title" 
+        [(ngModel)]="appointment.title" 
+        name="title" 
+        required 
+        placeholder="Enter appointment title" />
+    </div>
+    
+    <div class="form-group">
+      <label for="doctor">Doctor</label>
+      <input 
+        type="text" 
+        id="doctor" 
+        [(ngModel)]="appointment.doctor" 
+        name="doctor" 
+        placeholder="Doctor's name" />
+    </div>
+    
+    <div class="form-row">
+      <div class="form-group">
+        <label for="appointment_date">Appointment Date</label>
+        <input 
+          type="datetime-local" 
+          id="appointment_date" 
+          [(ngModel)]="appointment.appointment_date" 
+          name="appointment_date" />
+      </div>
+      
+      <div class="form-group">
+        <label for="status">Status</label>
+        <select id="status" [(ngModel)]="appointment.status" name="status">
+          <option value="scheduled">Scheduled</option>
+          <option value="completed">Completed</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label for="notes">Notes</label>
+      <textarea 
+        id="notes" 
+        [(ngModel)]="appointment.notes" 
+        name="notes" 
+        placeholder="Any preparation or notes for the appointment..."
+        rows="4"></textarea>
+    </div>
+    
+    <div class="form-group">
+      <label>For Family Member</label>
+      <app-searchable-dropdown
+        [selectedValue]="appointment.family_member_id"
+        (selectionChange)="onFamilyMemberSelect($event)"
+        placeholder="Select family member for this appointment...">
+      </app-searchable-dropdown>
+    </div>
+  </form>
+</app-form-window>

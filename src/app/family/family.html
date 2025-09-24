@@ -1,0 +1,61 @@
+<div class="view-header">
+  <h2>Family</h2>
+  @if (mode() === 'list') {
+    <button class="btn primary" (click)="showCreateForm()">Create New Family</button>
+  }
+</div>
+
+@if (mode() === 'list') {
+  <div class="list">
+    @if (loading()) {
+      <div class="loading-state">
+        <p>Loading families...</p>
+      </div>
+    } @else if (families().length === 0) {
+      <div class="empty-state">
+        <h3>No families found</h3>
+        <p>Create your first family to get started!</p>
+        <button class="btn primary" (click)="showCreateForm()">Create Family</button>
+      </div>
+    } @else {
+      @for (f of families(); track f.id) {
+        <div class="task-card" (click)="goTo(f.id)">
+          <div class="title">{{ f.name }}</div>
+          <div class="meta">{{ f.timezone || '—' }} • {{ f.currency || '—' }}</div>
+        </div>
+      }
+    }
+  </div>
+}
+
+@if (mode() === 'new' || mode() === 'detail') {
+  <div class="card">
+    <div class="section-title">
+      {{ mode() === 'new' ? 'Create New Family' : 'Family Details' }}
+    </div>
+    <form class="form" (ngSubmit)="saveFamily()">
+      <label>Name
+        <input [(ngModel)]="family.name" name="name" required />
+      </label>
+      <label>Description
+        <textarea [(ngModel)]="family.description" name="description" placeholder="Family description..."></textarea>
+      </label>
+      <label>Timezone
+        <input [(ngModel)]="family.timezone" name="timezone" placeholder="e.g., IST, EST, PST" />
+      </label>
+      <label>Currency
+        <input [(ngModel)]="family.currency" name="currency" placeholder="e.g., INR, USD, EUR" />
+      </label>
+      <div class="actions right">
+        <button type="button" class="btn outline" (click)="cancel()" [disabled]="loading()">Cancel</button>
+        <button type="submit" class="btn primary lg" [disabled]="loading()">
+          @if (loading()) {
+            Saving...
+          } @else {
+            {{ mode() === 'new' ? 'Create Family' : 'Update Family' }}
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+}

@@ -1,0 +1,29 @@
+<div class="family-selector">
+  <div class="family-header">
+    <h3>Select Family</h3>
+  </div>
+
+  @if (isLoading()) {
+    <div class="loading">Loading families...</div>
+  } @else if (userFamilies().length === 0) {
+    <div class="no-families">
+      <p>You are not a member of any families yet.</p>
+      <p>Contact a family admin to be added to a family.</p>
+    </div>
+  } @else {
+    <div class="family-list">
+      @for (familyMember of userFamilies(); track familyMember.id) {
+        <div 
+          class="family-item"
+          [class.selected]="selectedFamily()?.id === familyMember.id"
+          (click)="selectFamily(familyMember)">
+          <div class="family-name">{{ familyMember.family_name || familyMember.fullname }}</div>
+          <div class="family-role">Role: {{ familyMember.role }}</div>
+          @if (familyMember.family_description) {
+            <div class="family-description">{{ familyMember.family_description }}</div>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

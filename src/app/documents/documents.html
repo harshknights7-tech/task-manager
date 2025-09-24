@@ -1,0 +1,227 @@
+<div class="documents-container">
+  <div class="header">
+    <h1>📁 Documents</h1>
+    <button class="btn btn-primary" (click)="toggleUploadForm()">
+      {{ showUploadForm() ? 'Cancel' : 'Upload Document' }}
+    </button>
+  </div>
+
+  <!-- Upload Form -->
+  @if (showUploadForm()) {
+    <div class="upload-form">
+      <h3>Upload New Document</h3>
+      <form (ngSubmit)="uploadDocument()" #uploadForm="ngForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="title">Title *</label>
+            <input 
+              type="text" 
+              id="title" 
+              name="title" 
+              [(ngModel)]="uploadData.title" 
+              required 
+              class="form-control"
+              placeholder="Enter document title">
+          </div>
+          
+          <div class="form-group">
+            <label for="category">Category *</label>
+            <select 
+              id="category" 
+              name="category" 
+              [(ngModel)]="uploadData.category" 
+              required 
+              class="form-control">
+              <option value="">Select Category</option>
+              @for (category of documentCategories; track category) {
+                <option [value]="category">{{ getCategoryIcon(category) }} {{ category }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="member">Family Member</label>
+            <app-searchable-dropdown
+              [selectedValue]="uploadData.family_member_id"
+              (selectionChange)="onMemberSelect($event)"
+              placeholder="Select family member (optional)...">
+            </app-searchable-dropdown>
+          </div>
+          
+          <div class="form-group">
+            <label for="file">Document File *</label>
+            <input 
+              type="file" 
+              id="file" 
+              name="file" 
+              (change)="onFileSelected($event)" 
+              required 
+              class="form-control"
+              accept=".pdf,.jpg,.jpeg,.png,.gif,.doc,.docx,.xls,.xlsx,.txt">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea 
+            id="description" 
+            name="description" 
+            [(ngModel)]="uploadData.description" 
+            class="form-control"
+            rows="3"
+            placeholder="Enter document description (optional)"></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" (click)="resetUploadForm()">Cancel</button>
+          <button type="submit" class="btn btn-primary" [disabled]="isUploading()">
+            @if (isUploading()) {
+              Uploading...
+            } @else {
+              Upload Document
+            }
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+
+  <!-- Statistics Cards -->
+  @if (stats()) {
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">📄</div>
+        <div class="stat-content">
+          <div class="stat-number">{{ stats()?.total_documents || 0 }}</div>
+          <div class="stat-label">Total Documents</div>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">💾</div>
+        <div class="stat-content">
+          <div class="stat-number">{{ formatFileSize(stats()?.total_size || 0) }}</div>
+          <div class="stat-label">Total Size</div>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">📂</div>
+        <div class="stat-content">
+          <div class="stat-number">{{ stats()?.categories_count || 0 }}</div>
+          <div class="stat-label">Categories</div>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-content">
+          <div class="stat-number">{{ stats()?.members_with_documents || 0 }}</div>
+          <div class="stat-label">Members</div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Filters -->
+  <div class="filters">
+    <div class="filter-group">
+      <input 
+        type="text" 
+        placeholder="Search documents..." 
+        [(ngModel)]="searchTerm"
+        (input)="onSearchChange()"
+        class="form-control search-input">
+    </div>
+    
+    <div class="filter-group">
+      <select 
+        [(ngModel)]="selectedCategory" 
+        (change)="onCategoryChange()"
+        class="form-control">
+        <option value="">All Categories</option>
+        @for (category of categories(); track category.category) {
+          <option [value]="category.category">
+            {{ getCategoryIcon(category.category) }} {{ category.category }} ({{ category.count }})
+          </option>
+        }
+      </select>
+    </div>
+    
+    <div class="filter-group">
+      <app-searchable-dropdown
+        [selectedValue]="selectedMember()"
+        (selectionChange)="onMemberSelect($event)"
+        placeholder="All Members...">
+      </app-searchable-dropdown>
+    </div>
+    
+    <button class="btn btn-outline" (click)="clearFilters()">Clear Filters</button>
+  </div>
+
+  <!-- Documents List -->
+  <div class="documents-list">
+    @if (isLoading()) {
+      <div class="loading">Loading documents...</div>
+    } @else if (filteredDocuments().length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">📁</div>
+        <h3>No Documents Found</h3>
+        <p>@if (searchTerm() || selectedCategory() || selectedMember()) {
+          No documents match your current filters.
+        } @else {
+          Start by uploading your first document.
+        }</p>
+      </div>
+    } @else {
+      <div class="document-grid">
+        @for (document of filteredDocuments(); track document.id) {
+          <div class="document-card">
+            <div class="document-header">
+              <div class="document-icon">{{ getCategoryIcon(document.category) }}</div>
+              <div class="document-info">
+                <h4 class="document-title">{{ document.title }}</h4>
+                <p class="document-category">{{ document.category }}</p>
+              </div>
+              <div class="document-actions">
+                <button class="btn-icon" (click)="downloadDocument(document)" title="Download">
+                  ⬇️
+                </button>
+                <button class="btn-icon btn-danger" (click)="deleteDocument(document)" title="Delete">
+                  🗑️
+                </button>
+              </div>
+            </div>
+            
+            @if (document.description) {
+              <p class="document-description">{{ document.description }}</p>
+            }
+            
+            <div class="document-meta">
+              <div class="meta-item">
+                <span class="meta-label">File:</span>
+                <span class="meta-value">{{ document.file_name }}</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">Size:</span>
+                <span class="meta-value">{{ formatFileSize(document.file_size) }}</span>
+              </div>
+              @if (document.member_name) {
+                <div class="meta-item">
+                  <span class="meta-label">Member:</span>
+                  <span class="meta-value">{{ document.member_name }} ({{ document.relation }})</span>
+                </div>
+              }
+              <div class="meta-item">
+                <span class="meta-label">Uploaded:</span>
+                <span class="meta-value">{{ formatDate(document.created_at) }}</span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

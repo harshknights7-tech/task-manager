@@ -1,0 +1,55 @@
+<div class="searchable-dropdown" [class.disabled]="disabled">
+  <div 
+    class="dropdown-trigger" 
+    (click)="toggleDropdown()" 
+    (blur)="onBlur()"
+    tabindex="0">
+    <span class="selected-text" [class.placeholder]="!selectedMember()">
+      {{ getDisplayText() }}
+    </span>
+    <span class="dropdown-arrow" [class.open]="isOpen()">▼</span>
+  </div>
+  
+  @if (isOpen()) {
+    <div class="dropdown-menu">
+      <div class="search-container">
+        <input 
+          type="text" 
+          class="search-input"
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="onSearchChange($event)"
+          placeholder="Search family members..."
+          (click)="$event.stopPropagation()" />
+      </div>
+      
+      <div class="options-container">
+        @if (isLoading()) {
+          <div class="loading">Loading...</div>
+        } @else if (filteredOptions().length === 0) {
+          <div class="no-options">No family members found</div>
+        } @else {
+          @for (member of filteredOptions(); track member.id) {
+            <div 
+              class="option" 
+              (click)="selectMember(member)"
+              [class.selected]="selectedMember()?.id === member.id">
+              <div class="option-name">{{ member.fullname }}</div>
+              @if (member.email) {
+                <div class="option-email">{{ member.email }}</div>
+              }
+              @if (member.mobile) {
+                <div class="option-mobile">{{ member.mobile }}</div>
+              }
+            </div>
+          }
+        }
+      </div>
+      
+      @if (selectedMember()) {
+        <div class="clear-selection" (click)="clearSelection()">
+          Clear Selection
+        </div>
+      }
+    </div>
+  }
+</div>

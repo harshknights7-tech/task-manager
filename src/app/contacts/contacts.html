@@ -1,0 +1,84 @@
+<div class="view-header">
+  <h2>Contacts</h2>
+  <button (click)="openNewForm()" class="btn primary">Create New</button>
+</div>
+
+<div class="list">
+  @if (contacts().length === 0) {
+    <div class="empty-state">
+      <h3>No contacts found</h3>
+      <p>Add your first contact to get started!</p>
+    </div>
+  } @else {
+    @for (c of contacts(); track c.id) {
+      <div class="task-card" (click)="goTo(c.id)">
+        <div class="title">{{ c.name }}</div>
+        <div class="meta">{{ c.service_type || '—' }} • {{ c.phone || c.email || '—' }}</div>
+      </div>
+    }
+  }
+</div>
+
+<app-form-window 
+  [isOpen]="showFormWindow" 
+  [title]="formTitle()"
+  [isLoading]="isLoading()"
+  (close)="onFormClose()"
+  (save)="onFormSave()"
+  (cancel)="onFormCancel()">
+  
+  <form class="form" (ngSubmit)="saveContact()">
+    <div class="form-group">
+      <label for="name">Contact Name</label>
+      <input 
+        type="text" 
+        id="name" 
+        [(ngModel)]="contact.name" 
+        name="name" 
+        required 
+        placeholder="Enter contact name" />
+    </div>
+    
+    <div class="form-group">
+      <label for="service_type">Service Type</label>
+      <input 
+        type="text" 
+        id="service_type" 
+        [(ngModel)]="contact.service_type" 
+        name="service_type" 
+        placeholder="e.g., Plumber, Electrician" />
+    </div>
+    
+    <div class="form-row">
+      <div class="form-group">
+        <label for="phone">Phone</label>
+        <input 
+          type="tel" 
+          id="phone" 
+          [(ngModel)]="contact.phone" 
+          name="phone" 
+          placeholder="Phone number" />
+      </div>
+      
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input 
+          type="email" 
+          id="email" 
+          [(ngModel)]="contact.email" 
+          name="email" 
+          placeholder="Email address" />
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label for="address">Address</label>
+      <textarea 
+        id="address" 
+        [(ngModel)]="contact.address" 
+        name="address" 
+        placeholder="Enter address"
+        rows="3"></textarea>
+    </div>
+  </form>
+</app-form-window>

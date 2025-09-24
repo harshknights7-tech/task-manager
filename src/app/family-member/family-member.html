@@ -1,0 +1,117 @@
+<div class="view-header">
+  <h2>Family Members</h2>
+  <button (click)="openNewForm()" class="btn primary">Create New</button>
+</div>
+
+<div class="list">
+  @if (members().length === 0) {
+    <div class="empty-state">
+      <h3>No family members found</h3>
+      <p>Add your first family member to get started!</p>
+    </div>
+  }   @else {
+    @for (m of members(); track m.id) {
+      <div class="task-card" (click)="goTo(m.id)">
+        <div class="title">{{ m.fullname }}</div>
+        <div class="meta">{{ m.email || m.mobile || '—' }}</div>
+        @if (m.family_name) {
+          <div class="family-badge">{{ m.family_name }}</div>
+        }
+      </div>
+    }
+  }
+</div>
+
+<app-form-window 
+  [isOpen]="showFormWindow" 
+  [title]="formTitle()"
+  [isLoading]="isLoading()"
+  (close)="onFormClose()"
+  (save)="onFormSave()"
+  (cancel)="onFormCancel()">
+  
+  <form class="form" (ngSubmit)="saveMember()">
+    @if (mode() === 'new') {
+      <div class="form-group">
+        <label for="family">Family</label>
+        <select 
+          id="family" 
+          [(ngModel)]="selectedFamilyId" 
+          name="family"
+          required
+          (change)="onFamilySelect($any($event.target).value)">
+          <option value="">Select Family</option>
+          @for (family of families(); track family.id) {
+            <option [value]="family.id">{{ family.name }}</option>
+          }
+        </select>
+      </div>
+    }
+    
+    <div class="form-group">
+      <label for="fullname">Full Name</label>
+      <input 
+        type="text" 
+        id="fullname" 
+        [(ngModel)]="member.fullname" 
+        name="fullname" 
+        required 
+        placeholder="Enter full name" />
+    </div>
+    
+    <div class="form-row">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input 
+          type="email" 
+          id="email" 
+          [(ngModel)]="member.email" 
+          name="email" 
+          placeholder="Email address" />
+      </div>
+      
+      <div class="form-group">
+        <label for="mobile">Mobile</label>
+        <input 
+          type="tel" 
+          id="mobile" 
+          [(ngModel)]="member.mobile" 
+          name="mobile" 
+          placeholder="Mobile number" />
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label for="role">Role</label>
+      <select id="role" [(ngModel)]="member.role" name="role">
+        <option value="">Select role</option>
+        <option value="parent">Parent</option>
+        <option value="child">Child</option>
+        <option value="guardian">Guardian</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+    
+    <div class="form-group">
+      <label for="points">Points</label>
+      <input 
+        type="number" 
+        id="points" 
+        [(ngModel)]="member.points" 
+        name="points" 
+        placeholder="Points earned" 
+        min="0" />
+    </div>
+    
+    <div class="form-group">
+      <label class="checkbox-label">
+        <input 
+          type="checkbox" 
+          id="is_active" 
+          [(ngModel)]="member.is_active" 
+          name="is_active" />
+        <span>Active member</span>
+      </label>
+    </div>
+  </form>
+</app-form-window>
