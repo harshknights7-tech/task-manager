@@ -1,12 +1,8 @@
 {
   "version": 2,
-  "name": "task-manager",
-  "builds": [
-    {
-      "src": "dist/task-manager/**/*",
-      "use": "@vercel/static"
-    }
-  ],
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist/task-manager",
+  "framework": "angular",
   "routes": [
     {
       "src": "/(.*)",
@@ -14,11 +10,6 @@
     }
   ],
   "env": {
-    "API_URL": "https://your-backend-url.vercel.app"
-  },
-  "functions": {
-    "src/backend/**/*.js": {
-      "runtime": "nodejs18.x"
-    }
+    "API_URL": "https://your-backend-url.railway.app"
   }
 }
